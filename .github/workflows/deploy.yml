@@ -1,6 +1,7 @@
 name: Build and publish applications to Jumpstart ACR
 
-# on:
+on:
+  workflow_dispatch:
 #   push:
 #     branches:
 #     - deploy
