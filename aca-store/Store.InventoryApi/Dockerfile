@@ -6,8 +6,8 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Store.InventoryApi/Store.InventoryApi.csproj", "Store.InventoryApi/"]
-COPY ["Monitoring/Monitoring.csproj", "Monitoring/"]
+COPY ["aca-store/Store.InventoryApi/Store.InventoryApi.csproj", "Store.InventoryApi/"]
+COPY ["aca-store/Monitoring/Monitoring.csproj", "Monitoring/"]
 RUN dotnet restore "Store.InventoryApi/Store.InventoryApi.csproj"
 COPY . .
 WORKDIR "/src/Store.InventoryApi"
