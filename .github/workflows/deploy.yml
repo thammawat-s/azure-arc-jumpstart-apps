@@ -1,0 +1,65 @@
+name: Build and publish applications to Jumpstart ACR
+
+# on:
+#   push:
+#     branches:
+#     - deploy
+
+env:
+  
+  # alphanumeric string under 14 characters
+  CONTAINER_REGISTRY_NAME: arcjumpstart
+
+  STORE_DOCKER: aca-store/Store/Dockerfile
+  STORE_IMAGE: aca_store
+
+  INVENTORY_DOCKER: aca-store/Store.InventoryApi/Dockerfile
+  INVENTORY_IMAGE: aca_inventory
+
+  PRODUCTS_DOCKER: aca-store/Store.ProductApi/Dockerfile
+  PRODUCTS_IMAGE: aca_products
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+
+    - name: Checkout to the branch
+      uses: actions/checkout@v2
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AzureSPN }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to ACR
+      run: |
+        set -euo pipefail
+        access_token=$(az account get-access-token --query accessToken -o tsv)
+        refresh_token=$(curl https://${{ env.CONTAINER_REGISTRY_NAME }}acr.azurecr.io/oauth2/exchange -v -d "grant_type=access_token&service=${{ env.CONTAINER_REGISTRY_NAME }}acr.azurecr.io&access_token=$access_token" | jq -r .refresh_token)
+        docker login -u 00000000-0000-0000-0000-000000000000 --password-stdin ${{ env.CONTAINER_REGISTRY_NAME }}acr.azurecr.io <<< "$refresh_token"
+
+    - name: Build the products api image and push it to ACR
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: ${{ env.CONTAINER_REGISTRY_NAME }}acr.azurecr.io/${{ env.PRODUCTS_IMAGE }}:${{ github.sha }}
+        file: ${{ env.PRODUCTS_DOCKER }}
+
+    - name: Build the inventory api image and push it to ACR
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: ${{ env.CONTAINER_REGISTRY_NAME }}acr.azurecr.io/${{ env.INVENTORY_IMAGE }}:${{ github.sha }}
+        file: ${{ env.INVENTORY_DOCKER }}
+
+    - name: Build the frontend image and push it to ACR
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: ${{ env.CONTAINER_REGISTRY_NAME }}acr.azurecr.io/${{ env.STORE_IMAGE }}:${{ github.sha }}
+        file: ${{ env.STORE_DOCKER }}
