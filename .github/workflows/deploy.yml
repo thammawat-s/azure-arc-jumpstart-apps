@@ -18,7 +18,7 @@ env:
   INVENTORY_DOCKER: aca-store/Store.InventoryApi/Dockerfile
   INVENTORY_IMAGE: aca_inventory
 
-  PRODUCTS_DOCKER: aca-store/Store.ProductApi/Dockerfile
+  PRODUCTS_DOCKER: Store.ProductApi/Dockerfile
   PRODUCTS_IMAGE: aca_products
 
 jobs:
