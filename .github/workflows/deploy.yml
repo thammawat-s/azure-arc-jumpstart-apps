@@ -11,7 +11,7 @@ env:
   
   CONTAINER_REGISTRY_NAME: arcjumpstart
 
-  STORE_DOCKER: aca-store/Store/Dockerfile
+  STORE_DOCKER: Store/Dockerfile
   STORE_IMAGE: aca_store
 
   INVENTORY_DOCKER: aca-store/Store.InventoryApi/Dockerfile
