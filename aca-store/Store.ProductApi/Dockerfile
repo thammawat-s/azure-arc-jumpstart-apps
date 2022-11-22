@@ -6,9 +6,9 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Store.ProductApi/Store.ProductApi.csproj", "Store.ProductApi/"]
-COPY ["Monitoring/Monitoring.csproj", "Monitoring/"]
-RUN dotnet restore "Store.ProductApi/Store.ProductApi.csproj"
+COPY ["aca-store/Store.ProductApi/Store.ProductApi.csproj", "Store.ProductApi/"]
+COPY ["aca-store/Monitoring/Monitoring.csproj", "Monitoring/"]
+RUN dotnet restore "aca-store/Store.ProductApi/Store.ProductApi.csproj"
 COPY . .
 WORKDIR "/src/Store.ProductApi"
 RUN dotnet build "Store.ProductApi.csproj" -c Release -o /app/build
